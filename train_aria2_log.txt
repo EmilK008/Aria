@@ -1,0 +1,20 @@
+Loaded 21,228,129 train / 433,227 val tokens | vocab 10003
+  model: 30.47M parameters on cuda
+Training for 12000 steps ...
+  step     1 | train 8.543 | val 8.401 | 6s elapsed
+  step  1000 | train 2.886 | val 0.520 | 154s elapsed
+  step  2000 | train 2.451 | val 0.271 | 301s elapsed
+  step  3000 | train 2.228 | val 0.180 | 448s elapsed
+  step  4000 | train 2.151 | val 0.133 | 596s elapsed
+  step  5000 | train 2.027 | val 0.098 | 743s elapsed
+  step  6000 | train 1.951 | val 0.087 | 888s elapsed
+  step  7000 | train 1.877 | val 0.080 | 1034s elapsed
+  step  8000 | train 1.838 | val 0.068 | 1176s elapsed
+  step  9000 | train 1.803 | val 0.069 | 1318s elapsed
+  step 10000 | train 1.767 | val 0.062 | 1459s elapsed
+  step 11000 | train 1.748 | val 0.057 | 1600s elapsed
+  step 12000 | train 1.723 | val 0.062 | 1745s elapsed
+Saved checkpoint -> ckpt_chat.pt
+
+--- sample conversation ---
+<|user|>Hi there! How are you doing today?<|eot|><|bot|>I'm doing well, thank you. How are you?<|eot|>

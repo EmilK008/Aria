@@ -1,0 +1,12 @@
+{
+  "name": "Aria — from-scratch AI chatbot",
+  "short_name": "Aria",
+  "description": "A GPT chatbot built from scratch, with web search.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1014",
+  "theme_color": "#0f1115",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

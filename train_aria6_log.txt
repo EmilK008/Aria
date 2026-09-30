@@ -1,0 +1,6 @@
+Loaded 136,229,924 train / 2,780,202 val tokens | vocab 24003
+  model: 226.64M parameters on cuda | micro-batch 8 x grad_accum 6 = 48 effective
+Training for 18000 steps ...
+  step     1 | train 10.209 | val 10.239 | lr 6.0e-07 | 10s elapsed
+  step  1000 | train 2.690 | val 4.842 | lr 3.0e-04 | 1035s elapsed
+  step  2000 | train 2.080 | val 4.254 | lr 3.0e-04 | 2067s elapsed

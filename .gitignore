@@ -1,0 +1,15 @@
+# SECRETS — never commit (would leak your search API keys)
+search_keys.json
+
+# Model checkpoints & training state (huge; GitHub rejects >100 MB anyway)
+*.pt
+
+# Downloaded datasets (re-downloaded by prepare_*.py on any machine)
+*.parquet
+
+# Logs & scratch
+*.log
+*.err
+__pycache__/
+*.pyc
+_*.py          # temporary probe/scratch scripts

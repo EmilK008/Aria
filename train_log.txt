@@ -1,0 +1,49 @@
+Loading corpus from data_shakespeare.txt ...
+  1,115,394 chars | vocab 65 | 1,003,855 train / 111,539 val tokens
+  model: 10.77M parameters on cuda
+Training for 3000 steps ...
+  step     1 | train 3.572 | val 3.603 | 3s elapsed
+  step   250 | train 2.225 | val 2.279 | 28s elapsed
+  step   500 | train 1.696 | val 1.856 | 53s elapsed
+  step   750 | train 1.476 | val 1.678 | 77s elapsed
+  step  1000 | train 1.362 | val 1.573 | 102s elapsed
+  step  1250 | train 1.277 | val 1.531 | 126s elapsed
+  step  1500 | train 1.214 | val 1.488 | 150s elapsed
+  step  1750 | train 1.159 | val 1.476 | 174s elapsed
+  step  2000 | train 1.119 | val 1.483 | 198s elapsed
+  step  2250 | train 1.067 | val 1.481 | 221s elapsed
+  step  2500 | train 1.023 | val 1.488 | 245s elapsed
+  step  2750 | train 0.975 | val 1.514 | 268s elapsed
+  step  3000 | train 0.921 | val 1.532 | 292s elapsed
+Saved checkpoint -> ckpt.pt
+
+--- sample ---
+
+BUCKINGHAM:
+What news? what is that?
+
+BUCKINGHAM:
+What will you that set the king's, my lord?
+
+GLOUCESTER:
+What, will you think there?
+
+BUCKINGHAM:
+Come, my lord.
+
+GLOUCESTER:
+
+BUCKINGHAM:
+To what scandal, my lord will chammend me?
+
+GLOUCESTER:
+'Tis a drum; and look upon his condemnation.
+
+BUCKINGHAM:
+Who comes there?
+
+BUCKINGHAM:
+Hast thou for Mowbray, my Lord Froth hast stroken?
+
+GLOUCESTER:
+Why

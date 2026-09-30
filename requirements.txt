@@ -1,0 +1,12 @@
+# Aria — dependencies
+#
+# GPU PyTorch (pick the CUDA build for your card; cu128 works for RTX 40-series and
+# most modern cloud GPUs). On a cloud box that already has torch, skip this line.
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+torch>=2.6
+
+# data prep (reading the HuggingFace parquet datasets)
+pyarrow>=15
+
+# desktop app only (NOT needed for training or the web/API server)
+pywebview>=5 ; platform_system == "Windows"
