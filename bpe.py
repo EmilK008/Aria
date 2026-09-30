@@ -17,6 +17,7 @@ We also support *special tokens* (<|user|>, <|bot|>, <|eot|>) which are never
 split -- they're structural markers for the chat format.
 """
 
+import heapq
 import json
 import re
 from collections import Counter
@@ -39,35 +40,70 @@ class BPETokenizer:
         self._cache = {}          # memoize chunk -> ids (words repeat a LOT)
 
     # ---------- training ----------
-    def train(self, text, vocab_size, special_tokens=None):
+    def train(self, text, vocab_size, special_tokens=None, verbose=True):
         assert vocab_size >= 256
         num_merges = vocab_size - 256
 
         # pre-tokenize into chunks, then work on *unique* chunks weighted by count
-        # (massively faster than scanning the whole corpus every merge)
         chunk_counts = Counter(_SPLIT_PAT.findall(text))
-        words = [
-            (list(chunk.encode("utf-8")), count)
-            for chunk, count in chunk_counts.items()
-        ]
+        words, counts = [], []
+        for chunk, c in chunk_counts.items():
+            words.append(list(chunk.encode("utf-8")))
+            counts.append(c)
 
         self.merges = {}
         self.vocab = {i: bytes([i]) for i in range(256)}
 
+        # Incremental training: keep a running weighted count of every adjacent pair,
+        # and for each pair the set of words that contain it. A merge then only has to
+        # touch the words that actually contain that pair -- not the whole corpus --
+        # so training is roughly O(total symbols) instead of O(merges x total symbols).
+        pair_freq = {}          # (a, b) -> total weighted frequency
+        where = {}              # (a, b) -> set of word indices containing it
+        for i, w in enumerate(words):
+            c = counts[i]
+            for pr in zip(w, w[1:]):
+                pair_freq[pr] = pair_freq.get(pr, 0) + c
+                where.setdefault(pr, set()).add(i)
+
+        # a max-heap over frequency, with lazy invalidation of stale entries
+        heap = [(-f, pr) for pr, f in pair_freq.items()]
+        heapq.heapify(heap)
+        report = max(1, num_merges // 20)
+
         for m in range(num_merges):
-            # count every adjacent pair across all words, weighted by word frequency
-            pair_counts = Counter()
-            for symbols, count in words:
-                for a, b in zip(symbols, symbols[1:]):
-                    pair_counts[(a, b)] += count
-            if not pair_counts:
+            best = None
+            while heap:                                  # pop until a current maximum
+                neg, pr = heapq.heappop(heap)
+                if -neg > 0 and pair_freq.get(pr, 0) == -neg:
+                    best = pr
+                    break
+            if best is None:
                 break
-            best = max(pair_counts, key=pair_counts.get)
+
             new_id = 256 + m
             self.merges[best] = new_id
             self.vocab[new_id] = self.vocab[best[0]] + self.vocab[best[1]]
-            # apply this merge inside every word
-            words = [(_merge_symbols(sym, best, new_id), c) for sym, c in words]
+
+            dirty = set()
+            for i in where.pop(best, ()):                # only words containing `best`
+                w, c = words[i], counts[i]
+                for pr in zip(w, w[1:]):                 # remove this word's old pairs
+                    pair_freq[pr] -= c
+                    dirty.add(pr)
+                w2 = _merge_symbols(w, best, new_id)     # do the merge in this word
+                words[i] = w2
+                for pr in zip(w2, w2[1:]):               # add its new pairs
+                    pair_freq[pr] = pair_freq.get(pr, 0) + c
+                    where.setdefault(pr, set()).add(i)
+                    dirty.add(pr)
+            for pr in dirty:                             # re-heap the changed pairs
+                f = pair_freq.get(pr, 0)
+                if f > 0:
+                    heapq.heappush(heap, (-f, pr))
+
+            if verbose and (m + 1) % report == 0:
+                print(f"    BPE merges {m+1}/{num_merges} ({100*(m+1)//num_merges}%)", flush=True)
 
         self._register_specials(special_tokens or [])
 
